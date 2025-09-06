@@ -1,14 +1,16 @@
 package com.blog.demo.service.Impl
+import com.blog.demo.com.blog.demo.service.mapper.EntityConverter
 import com.blog.demo.model.User
 import com.blog.demo.model.dto.UserDTO
 import com.blog.demo.repository.UserRepository
 import com.blog.demo.service.UserService
 import jakarta.transaction.Transactional
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 @Service
-class UserServiceImpl(private val userRepository: UserRepository) : UserService {
+class UserServiceImpl(
+    private val userRepository: UserRepository,
+    private val converter: EntityConverter) : UserService {
 
     @Transactional
     override fun createUser(userDTO: UserDTO): User {
@@ -21,8 +23,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             throw IllegalArgumentException("Senhas não conferem")
         }
 
-        //val encryptedPassword = BCryptPasswordEncoder().encode(userDTO.password)
-
+//        val encryptedPassword = BCryptPasswordEncoder().encode(userDTO.password)
+//
         val user = User(
             username = userDTO.username,
             email = userDTO.email,
@@ -60,14 +62,9 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             password = userDTO.password
         }
 
-        return userRepository.save(existingUser).let { updatedUser ->
-            UserDTO(
-                username = updatedUser.username ?: "",
-                email = updatedUser.email ?: "",
-                password = updatedUser.password ?: "",
-                confirmedPassword = updatedUser.confirmedPassword ?: ""
-            )
-        }
+       val updateUser = userRepository.save(existingUser)
+
+       return converter.parseObject(updateUser, UserDTO::class.java)
     }
 
     override fun deleteUser(id: Long): String {
