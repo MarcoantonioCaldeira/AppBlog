@@ -1,10 +1,12 @@
 package com.blog.model.entity
+import com.blog.com.blog.model.entity.Task
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.OneToMany
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
@@ -30,6 +32,9 @@ class User : UserDetails {
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var confirmedPassword: String? = null
+
+    @OneToMany(mappedBy = "user")
+    var tasks : Set<Task> = hashSetOf()
 
     constructor()
 
