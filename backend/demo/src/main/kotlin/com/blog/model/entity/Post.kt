@@ -1,0 +1,54 @@
+package com.blog.com.blog.model.entity
+
+import com.blog.model.entity.User
+import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
+
+@Entity
+@Table(name = "tb_post")
+class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+    var title: String? = null
+    var content: String? = null
+    var author: String? = null
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    var user : User? = null
+
+    @OneToMany(mappedBy = "user")
+    var comments : Set<Comment> = hashSetOf()
+
+    constructor()
+
+    constructor(title: String?, content: String?, author: String?, user: User?) {
+        this.title = title
+        this.content = content
+        this.author = author
+        this.user = user
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Post
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
+}

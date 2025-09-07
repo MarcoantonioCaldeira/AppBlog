@@ -1,4 +1,5 @@
 package com.blog.model.entity
+import com.blog.com.blog.model.entity.Post
 import com.blog.com.blog.model.entity.Task
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.Entity
@@ -35,6 +36,9 @@ class User : UserDetails {
 
     @OneToMany(mappedBy = "user")
     var tasks : Set<Task> = hashSetOf()
+
+    @OneToMany(mappedBy = "user")
+    var posts : Set<Post> = hashSetOf()
 
     constructor()
 
