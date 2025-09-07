@@ -1,11 +1,11 @@
-package com.blog.demo.service.Impl
-import com.blog.demo.com.blog.demo.service.mapper.EntityConverter
-import com.blog.demo.model.User
-import com.blog.demo.model.dto.UserDTO
-import com.blog.demo.repository.UserRepository
-import com.blog.demo.service.UserService
+package com.blog.service.Impl
+import com.blog.service.mapper.EntityConverter
+import com.blog.model.entity.User
+import com.blog.model.dto.UserDTO
+import com.blog.repository.UserRepository
+import com.blog.service.UserService
 import jakarta.transaction.Transactional
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl(
@@ -19,34 +19,35 @@ class UserServiceImpl(
             throw IllegalArgumentException("Email já cadastrado")
         }
 
-        if (userDTO.password != userDTO.confirmedPassword) {
+        if (userDTO.passwordFild != userDTO.confirmedPassword) {
             throw IllegalArgumentException("Senhas não conferem")
         }
 
-//        val encryptedPassword = BCryptPasswordEncoder().encode(userDTO.password)
-//
+        val encryptedPassword = BCryptPasswordEncoder().encode(userDTO.passwordFild)
+
         val user = User(
-            username = userDTO.username,
+            role = userDTO.role,
+            login = userDTO.login,
+            name = userDTO.name,
             email = userDTO.email,
-            password = userDTO.password,
-            confirmedPassword = userDTO.confirmedPassword
+            password = encryptedPassword,
+            confirmedPassword = encryptedPassword
         )
 
         return userRepository.save(user)
     }
 
 
-    override fun getUserById(id: Long): UserDTO {
+    override fun getUserById(id: Long): User? {
         return userRepository.getUserById(id);
     }
 
     override fun getAllUsers(): List<UserDTO> {
         return userRepository.findAll().map { user ->
             UserDTO(
-                username = user.username ?: "",
+                name = user.name ?: "",
                 email = user.email ?: "",
-                password = user.password ?: "",
-                confirmedPassword = user.confirmedPassword ?: ""
+                passwordFild = user.password ?: ""
             )
         }
     }
@@ -57,9 +58,9 @@ class UserServiceImpl(
 
 
         existingUser.apply {
-            username = userDTO.username
+            name = userDTO.name
             email = userDTO.email
-            password = userDTO.password
+            passwordFild = userDTO.passwordFild
         }
 
        val updateUser = userRepository.save(existingUser)

@@ -1,11 +1,11 @@
-package com.blog.demo.service
-import com.blog.demo.model.User
-import com.blog.demo.model.dto.UserDTO
+package com.blog.service
+import com.blog.model.entity.User
+import com.blog.model.dto.UserDTO
 
 
 interface UserService {
     fun createUser(userDTO: UserDTO): User
-    fun getUserById(id: Long): UserDTO
+    fun getUserById(id: Long): User?
     fun getAllUsers(): List<UserDTO>
     fun updateUser(id: Long, userDTO: UserDTO): UserDTO
     fun deleteUser(id: Long): String

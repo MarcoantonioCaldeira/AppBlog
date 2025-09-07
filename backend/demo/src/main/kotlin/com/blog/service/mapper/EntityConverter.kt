@@ -1,4 +1,4 @@
-package com.blog.demo.com.blog.demo.service.mapper
+package com.blog.service.mapper
 import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Component
 

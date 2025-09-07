@@ -1,10 +1,8 @@
-package com.blog.demo.com.blog.demo.controller
-
-import com.blog.demo.model.User
-import com.blog.demo.model.dto.UserDTO
-import com.blog.demo.service.Impl.UserServiceImpl
+package com.blog.controller
+import com.blog.model.entity.User
+import com.blog.model.dto.UserDTO
+import com.blog.service.Impl.UserServiceImpl
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,8 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @RequestMapping("/api/users")
 class UserController(private val userService: UserServiceImpl) {
 
@@ -24,7 +23,7 @@ class UserController(private val userService: UserServiceImpl) {
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<UserDTO> {
+    fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
         val user = userService.getUserById(id)
         return ResponseEntity.ok(user)
     }
