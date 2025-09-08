@@ -25,7 +25,6 @@ class Task {
     @JoinColumn(name = "user_id")
     var user: User? = null;
 
-
     constructor()
 
     constructor(title: String?, description: String?, user: User?) {

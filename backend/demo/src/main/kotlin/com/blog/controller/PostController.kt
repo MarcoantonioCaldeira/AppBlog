@@ -24,7 +24,7 @@ class PostController(private val postService : PostService) {
     }
 
     @GetMapping("/{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<Post> {
+    fun getPostById(@PathVariable id: Long): ResponseEntity<Post> {
         val post = postService.getPostById(id)
         return ResponseEntity.ok(post)
     }
