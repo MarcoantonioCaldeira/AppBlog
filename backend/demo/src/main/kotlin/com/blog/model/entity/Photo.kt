@@ -1,46 +1,46 @@
 package com.blog.com.blog.model.entity
 
-import com.blog.model.entity.User
-import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "tb_albums")
-class Albums {
+@Table(name = "tb_photo")
+class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-    var title: String? = null
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    var user : User? = null
+    var fileName: String? = null
 
-    @OneToMany(mappedBy = "album", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val photos: Set<Photo> = hashSetOf()
+    @Lob
+    var data: ByteArray? = null
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
+    var album: Albums ? = null
 
     constructor()
 
-    constructor(title: String?, user: User?) {
-        this.title = title
-        this.user = user
+    constructor(fileName: String?, data: ByteArray?, album: Albums?) {
+        this.fileName = fileName
+        this.data = data
+        this.album = album
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Albums
+        other as Photo
 
         return id == other.id
     }

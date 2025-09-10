@@ -1,4 +1,5 @@
 package com.blog.model.entity
+import com.blog.com.blog.model.entity.Albums
 import com.blog.com.blog.model.entity.Post
 import com.blog.com.blog.model.entity.Task
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -39,6 +40,9 @@ class User : UserDetails {
 
     @OneToMany(mappedBy = "user")
     var posts : Set<Post> = hashSetOf()
+
+    @OneToMany(mappedBy = "user")
+    var albums : Set<Albums> = hashSetOf()
 
     constructor()
 
