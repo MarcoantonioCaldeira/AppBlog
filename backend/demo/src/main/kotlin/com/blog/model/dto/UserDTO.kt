@@ -7,6 +7,6 @@ data class UserDTO(
     var login : String? = null,
     var role: UserRole? = null,
     var email: String? = null,
-    var passwordFild: String? = null,
+    var passwordField: String? = null,
     var confirmedPassword: String? = null
 )

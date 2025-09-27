@@ -1,4 +1,7 @@
-package com.blog.service.Impl
+package com.blog.service.impl
+import com.blog.service.exceptions.EmailAlreadyExistsException
+import com.blog.service.exceptions.PasswordMismatchException
+import com.blog.service.exceptions.UserNotFoundException
 import com.blog.service.mapper.EntityConverter
 import com.blog.model.entity.User
 import com.blog.model.dto.UserDTO
@@ -7,23 +10,25 @@ import com.blog.service.UserService
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val converter: EntityConverter) : UserService {
+    private val converter: EntityConverter
+) : UserService {
+
+    private val passwordEncoder = BCryptPasswordEncoder()
 
     @Transactional
-    override fun createUser(userDTO: UserDTO): User {
+    override fun createUser(userDTO: UserDTO): UserDTO {
+        userRepository.findByEmail(userDTO.email!!)
+            ?.let { throw EmailAlreadyExistsException("E-mail já cadastrado: ${userDTO.email}") }
 
-        if(userRepository.findByEmail(userDTO.email ?: "") != null) {
-            throw IllegalArgumentException("Email já cadastrado")
+        if (userDTO.passwordField != userDTO.confirmedPassword) {
+            throw PasswordMismatchException("As senhas não conferem")
         }
 
-        if (userDTO.passwordFild != userDTO.confirmedPassword) {
-            throw IllegalArgumentException("Senhas não conferem")
-        }
-
-        val encryptedPassword = BCryptPasswordEncoder().encode(userDTO.passwordFild)
+        val encryptedPassword = passwordEncoder.encode(userDTO.passwordField)
 
         val user = User(
             role = userDTO.role,
@@ -34,45 +39,47 @@ class UserServiceImpl(
             confirmedPassword = encryptedPassword
         )
 
-        return userRepository.save(user)
+        val savedUser = userRepository.save(user)
+        return converter.parseObject(savedUser, UserDTO::class.java)
     }
 
+    override fun getUserById(id: Long): UserDTO {
+        val user = userRepository.findById(id)
+            .orElseThrow { UserNotFoundException("Usuário com id $id não encontrado") }
 
-    override fun getUserById(id: Long): User? {
-        return userRepository.getUserById(id);
+        return converter.parseObject(user, UserDTO::class.java)
     }
 
     override fun getAllUsers(): List<UserDTO> {
-        return userRepository.findAll().map { user ->
-            UserDTO(
-                name = user.name ?: "",
-                email = user.email ?: "",
-                passwordFild = user.password ?: ""
-            )
-        }
+        return userRepository.findAll()
+            .map { converter.parseObject(it, UserDTO::class.java) }
     }
 
+    @Transactional
     override fun updateUser(id: Long, userDTO: UserDTO): UserDTO {
         val existingUser = userRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Usuário com id $id não encontrado") }
+            .orElseThrow { UserNotFoundException("Usuário com id $id não encontrado") }
 
+        if (userDTO.passwordField != userDTO.confirmedPassword) {
+            throw PasswordMismatchException("As senhas não conferem")
+        }
 
         existingUser.apply {
             name = userDTO.name
             email = userDTO.email
-            passwordFild = userDTO.passwordFild
+            passwordFild = userDTO.passwordField
         }
 
-       val updateUser = userRepository.save(existingUser)
-
-       return converter.parseObject(updateUser, UserDTO::class.java)
+        val updatedUser = userRepository.save(existingUser)
+        return converter.parseObject(updatedUser, UserDTO::class.java)
     }
 
+    @Transactional
     override fun deleteUser(id: Long): String {
         val user = userRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Usuário com id $id não encontrado") }
+            .orElseThrow { UserNotFoundException("Usuário com id $id não encontrado") }
 
         userRepository.delete(user)
-        return "Usuário ${user.username} deletado com sucesso!"
+        return "Usuário ${user.login} deletado com sucesso!"
     }
 }
