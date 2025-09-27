@@ -1,6 +1,5 @@
 package com.blog.com.blog.controller
 import com.blog.com.blog.model.dto.PostDTO
-import com.blog.com.blog.model.entity.Post
 import com.blog.com.blog.service.PostService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 class PostController(private val postService : PostService) {
 
     @PostMapping("/create")
-    fun createPost(@RequestBody postDTO: PostDTO): ResponseEntity<Post?> {
+    fun createPost(@RequestBody postDTO: PostDTO): ResponseEntity<PostDTO?> {
         val createdPost = postService.createPost(postDTO)
         return ResponseEntity.ok(createdPost)
     }
 
     @GetMapping("/{id}")
-    fun getPostById(@PathVariable id: Long): ResponseEntity<Post> {
+    fun getPostById(@PathVariable id: Long): ResponseEntity<PostDTO> {
         val post = postService.getPostById(id)
         return ResponseEntity.ok(post)
     }

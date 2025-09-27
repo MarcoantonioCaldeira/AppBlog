@@ -1,6 +1,5 @@
 package com.blog.com.blog.controller
 import com.blog.com.blog.model.dto.TaskDTO
-import com.blog.com.blog.model.entity.Task
 import com.blog.com.blog.service.TaskService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 class TaskController(private val taskService: TaskService) {
 
     @PostMapping("/create")
-    fun createTask(@RequestBody taskDTO: TaskDTO): ResponseEntity<Task?> {
+    fun createTask(@RequestBody taskDTO: TaskDTO): ResponseEntity<TaskDTO?> {
         val createdTask = taskService.createTask(taskDTO)
         return ResponseEntity.ok(createdTask)
     }
 
     @GetMapping("/{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<Task> {
+    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskDTO> {
         val task = taskService.getTaskById(id)
         return ResponseEntity.ok(task)
     }

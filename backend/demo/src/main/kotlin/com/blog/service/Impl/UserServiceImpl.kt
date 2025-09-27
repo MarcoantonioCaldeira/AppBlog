@@ -74,7 +74,7 @@ class UserServiceImpl(
         return converter.parseObject(updatedUser, UserDTO::class.java)
     }
 
-    @Transactional
+    //@Transactional
     override fun deleteUser(id: Long): String {
         val user = userRepository.findById(id)
             .orElseThrow { UserNotFoundException("Usuário com id $id não encontrado") }

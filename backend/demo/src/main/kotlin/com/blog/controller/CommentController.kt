@@ -1,6 +1,5 @@
 package com.blog.com.blog.controller
 import com.blog.com.blog.model.dto.CommentDTO
-import com.blog.com.blog.model.entity.Comment
 import com.blog.com.blog.service.CommentService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -17,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 class CommentController(private val commentService: CommentService) {
 
     @PostMapping("/create")
-    fun createComment(@RequestBody commentDTO: CommentDTO): ResponseEntity<Comment?> {
+    fun createComment(@RequestBody commentDTO: CommentDTO): ResponseEntity<CommentDTO?> {
         val createdComment = commentService.createComment(commentDTO)
         return ResponseEntity.ok(createdComment)
     }
 
     @GetMapping("/{id}")
-    fun getCommentById(@PathVariable id: Long): ResponseEntity<Comment> {
+    fun getCommentById(@PathVariable id: Long): ResponseEntity<CommentDTO> {
         val comment = commentService.getCommentById(id)
         return ResponseEntity.ok(comment)
     }

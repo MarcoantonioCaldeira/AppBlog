@@ -1,7 +1,6 @@
 package com.blog.com.blog.controller
 import com.blog.com.blog.model.dto.PhotoDTO
-import com.blog.com.blog.model.entity.Photo
-import com.blog.com.blog.service.Impl.PhotoServiceImpl
+import com.blog.com.blog.service.PhotoService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("api/photos")
-class PhotoController( private val photoService: PhotoServiceImpl) {
+class PhotoController( private val photoService: PhotoService) {
 
 
     @PostMapping("/upload/{albumId}")
     fun uploadPhoto(
         @PathVariable albumId: Long,
         @RequestParam("file") file: MultipartFile
-    ): ResponseEntity<Photo?> {
+    ): ResponseEntity<PhotoDTO?> {
         val photoDTO = PhotoDTO(
             fileName = file.originalFilename ?: "sem_nome",
             data = file.bytes,
@@ -46,7 +45,7 @@ class PhotoController( private val photoService: PhotoServiceImpl) {
     }
 
     @GetMapping("/{id}")
-    fun getPhotoById(@PathVariable id: Long): ResponseEntity<Photo> {
+    fun getPhotoById(@PathVariable id: Long): ResponseEntity<PhotoDTO> {
         val photo = photoService.getPhotoById(id)
         return ResponseEntity.ok(photo)
     }

@@ -1,7 +1,6 @@
 package com.blog.controller
-import com.blog.model.entity.User
 import com.blog.model.dto.UserDTO
-import com.blog.service.Impl.UserServiceImpl
+import com.blog.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,16 +13,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(private val userService: UserServiceImpl) {
+class UserController(private val userService: UserService) {
 
     @PostMapping("/create")
-    fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<User?> {
+    fun createUser(@RequestBody userDTO: UserDTO): ResponseEntity<UserDTO?> {
         val createdUser = userService.createUser(userDTO)
         return ResponseEntity.ok(createdUser)
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
+    fun getUserById(@PathVariable id: Long): ResponseEntity<UserDTO> {
         val user = userService.getUserById(id)
         return ResponseEntity.ok(user)
     }
