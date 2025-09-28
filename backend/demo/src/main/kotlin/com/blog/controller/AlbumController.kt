@@ -1,6 +1,7 @@
-package com.blog.com.blog.controller
-import com.blog.com.blog.model.dto.AlbumsDTO
+package com.blog.controller
+import com.blog.model.dto.AlbumsDTO
 import com.blog.com.blog.service.AlbumsService
+import com.blog.model.entity.Albums
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 class AlbumController(private val albumService : AlbumsService) {
 
     @PostMapping("/create")
-    fun createAlbum(@RequestBody albumsDTO: AlbumsDTO): ResponseEntity<AlbumsDTO?> {
+    fun createAlbum(@RequestBody albumsDTO: AlbumsDTO): ResponseEntity<Albums?> {
         val createdAlbum = albumService.createAlbum(albumsDTO)
         return ResponseEntity.ok(createdAlbum)
     }
 
     @GetMapping("/{id}")
-    fun getAlbumById(@PathVariable id: Long): ResponseEntity<AlbumsDTO> {
+    fun getAlbumById(@PathVariable id: Long): ResponseEntity<Albums?> {
         val albums = albumService.getAlbumsById(id)
         return ResponseEntity.ok(albums)
     }

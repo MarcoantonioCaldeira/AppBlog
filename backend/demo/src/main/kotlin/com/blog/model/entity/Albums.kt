@@ -1,6 +1,5 @@
-package com.blog.com.blog.model.entity
-
-import com.blog.model.entity.User
+package com.blog.model.entity
+import com.blog.model.dto.PhotoDTO
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -27,13 +26,23 @@ class Albums {
     var user : User? = null
 
     @OneToMany(mappedBy = "album", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val photos: Set<Photo> = hashSetOf()
+    var photos: MutableSet<Photo> = mutableSetOf()
 
     constructor()
 
     constructor(title: String?, user: User?) {
         this.title = title
         this.user = user
+    }
+
+    fun addPhoto(photo: Photo) {
+        photos.add(photo)
+        photo.album = this
+    }
+
+    fun removePhoto(photo: Photo) {
+        photos.remove(photo)
+        photo.album = null
     }
 
     override fun equals(other: Any?): Boolean {

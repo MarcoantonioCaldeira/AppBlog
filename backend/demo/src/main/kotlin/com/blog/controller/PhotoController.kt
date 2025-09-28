@@ -1,6 +1,8 @@
-package com.blog.com.blog.controller
-import com.blog.com.blog.model.dto.PhotoDTO
-import com.blog.com.blog.service.PhotoService
+package com.blog.controller
+import com.blog.com.blog.service.security.SecurityUtils
+import com.blog.model.dto.PhotoDTO
+import com.blog.model.entity.Photo
+import com.blog.service.PhotoService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,18 +18,22 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("api/photos")
-class PhotoController( private val photoService: PhotoService) {
+class PhotoController( private val photoService: PhotoService, private val securityUtils: SecurityUtils) {
 
 
-    @PostMapping("/upload/{albumId}")
+    @PostMapping("/upload")
     fun uploadPhoto(
-        @PathVariable albumId: Long,
-        @RequestParam("file") file: MultipartFile
-    ): ResponseEntity<PhotoDTO?> {
+        @RequestParam("file") file: MultipartFile,
+        @RequestParam(required = false) albumId: Long?
+    ): ResponseEntity<Photo> {
+
+        val userId = securityUtils.getCurrentUserId()
+
         val photoDTO = PhotoDTO(
-            fileName = file.originalFilename ?: "sem_nome",
+            fileName = file.originalFilename ?: "no_name",
             data = file.bytes,
-            albumId = albumId
+            albumId = albumId,
+            userId = userId
         )
 
         val saved = photoService.createPhoto(photoDTO)

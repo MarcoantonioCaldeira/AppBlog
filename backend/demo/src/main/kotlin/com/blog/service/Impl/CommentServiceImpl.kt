@@ -1,9 +1,9 @@
 package com.blog.com.blog.service.Impl
-import com.blog.com.blog.model.dto.CommentDTO
-import com.blog.com.blog.model.entity.Comment
-import com.blog.com.blog.repository.CommentRepository
-import com.blog.com.blog.repository.PostRepository
-import com.blog.com.blog.service.CommentService
+import com.blog.model.dto.CommentDTO
+import com.blog.model.entity.Comment
+import com.blog.repository.CommentRepository
+import com.blog.repository.PostRepository
+import com.blog.service.CommentService
 import com.blog.service.exceptions.CommentNotFoundException
 import com.blog.service.mapper.EntityConverter
 import jakarta.transaction.Transactional
@@ -63,7 +63,6 @@ class CommentServiceImpl(
         return converter.parseObject(updatedComment, CommentDTO::class.java)
     }
 
-    @Transactional
     override fun deleteComment(id: Long): String {
         val existinComment = commentRepository.findById(id)
             .orElseThrow { CommentNotFoundException("Comentario com id $id não encontrado") }

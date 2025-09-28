@@ -1,5 +1,5 @@
-package com.blog.com.blog.service
-import com.blog.com.blog.model.dto.CommentDTO
+package com.blog.service
+import com.blog.model.dto.CommentDTO
 
 interface CommentService {
     fun createComment(commentDTO: CommentDTO): CommentDTO

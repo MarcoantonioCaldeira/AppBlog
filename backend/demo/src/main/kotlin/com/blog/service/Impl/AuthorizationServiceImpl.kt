@@ -1,4 +1,4 @@
-package com.blog.com.blog.service.Impl
+package com.blog.service.Impl
 
 import com.blog.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails

@@ -1,5 +1,5 @@
-package com.blog.com.blog.service
-import com.blog.com.blog.model.dto.PostDTO
+package com.blog.service
+import com.blog.model.dto.PostDTO
 
 interface PostService {
     fun createPost(postDTO: PostDTO): PostDTO

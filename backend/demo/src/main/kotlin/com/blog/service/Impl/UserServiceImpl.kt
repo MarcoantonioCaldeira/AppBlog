@@ -33,6 +33,7 @@ class UserServiceImpl(
         val user = User(
             role = userDTO.role,
             login = userDTO.login,
+            user_photo = userDTO.user_photo,
             name = userDTO.name,
             email = userDTO.email,
             password = encryptedPassword,
@@ -74,7 +75,6 @@ class UserServiceImpl(
         return converter.parseObject(updatedUser, UserDTO::class.java)
     }
 
-    //@Transactional
     override fun deleteUser(id: Long): String {
         val user = userRepository.findById(id)
             .orElseThrow { UserNotFoundException("Usuário com id $id não encontrado") }

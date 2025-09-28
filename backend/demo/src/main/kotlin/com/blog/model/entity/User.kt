@@ -1,14 +1,14 @@
 package com.blog.model.entity
-import com.blog.com.blog.model.entity.Albums
-import com.blog.com.blog.model.entity.Post
-import com.blog.com.blog.model.entity.Task
 import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
@@ -19,6 +19,10 @@ class User : UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "photo_id", referencedColumnName = "id")
+    var user_photo: Photo? = null
 
     var role : UserRole? = null
 
@@ -36,17 +40,18 @@ class User : UserDetails {
     var confirmedPassword: String? = null
 
     @OneToMany(mappedBy = "user")
-    var tasks : Set<Task> = hashSetOf()
-
-    @OneToMany(mappedBy = "user")
     var posts : Set<Post> = hashSetOf()
 
     @OneToMany(mappedBy = "user")
     var albums : Set<Albums> = hashSetOf()
 
+    @OneToMany(mappedBy = "user")
+    var photos : Set<Photo> = hashSetOf()
+
     constructor()
 
-    constructor(role: UserRole?, login: String?, name: String?, email: String?, password: String?, confirmedPassword: String?) {
+    constructor(role: UserRole?, login: String?, name: String?, email: String?, password: String?, confirmedPassword: String?, user_photo: Photo?) {
+        this.user_photo = user_photo
         this.role = role
         this.login = login
         this.name = name

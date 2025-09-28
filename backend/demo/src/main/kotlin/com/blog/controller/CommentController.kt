@@ -1,6 +1,6 @@
 package com.blog.com.blog.controller
-import com.blog.com.blog.model.dto.CommentDTO
-import com.blog.com.blog.service.CommentService
+import com.blog.model.dto.CommentDTO
+import com.blog.service.CommentService
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping

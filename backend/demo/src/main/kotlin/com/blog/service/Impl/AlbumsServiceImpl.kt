@@ -1,8 +1,8 @@
-package com.blog.com.blog.service.Impl
-import com.blog.com.blog.model.dto.AlbumsDTO
-import com.blog.com.blog.model.entity.Albums
-import com.blog.com.blog.repository.AlbumRepository
+package com.blog.service.Impl
+import com.blog.model.entity.Albums
+import com.blog.repository.AlbumRepository
 import com.blog.com.blog.service.AlbumsService
+import com.blog.model.dto.AlbumsDTO
 import com.blog.repository.UserRepository
 import com.blog.service.exceptions.AlbumNotFoundException
 import com.blog.service.exceptions.UserNotFoundException
@@ -18,7 +18,7 @@ class AlbumsServiceImpl(
 ) : AlbumsService {
 
     @Transactional
-    override fun createAlbum(albumsDTO: AlbumsDTO): AlbumsDTO {
+    override fun createAlbum(albumsDTO: AlbumsDTO): Albums {
 
         val user = userRepository.findById(albumsDTO.userId)
             .orElseThrow { UserNotFoundException("Usuário com id ${albumsDTO.userId} não encontrado") }
@@ -29,14 +29,11 @@ class AlbumsServiceImpl(
         )
 
         val albumSaved = albumRepository.save(albums)
-        return converter.parseObject(albumSaved, AlbumsDTO::class.java)
+        return albumSaved;
     }
 
-    override fun getAlbumsById(id: Long): AlbumsDTO? {
-        val album = albumRepository.findById(id)
-            .orElseThrow { AlbumNotFoundException("Album com id $id não encontrado") }
-
-        return converter.parseObject(album, AlbumsDTO::class.java)
+    override fun getAlbumsById(id: Long): Albums? {
+        return albumRepository.findAlbumById(id)
     }
 
     override fun getAllAlbums(): List<AlbumsDTO> {
@@ -64,7 +61,6 @@ class AlbumsServiceImpl(
         return converter.parseObject(updatedAlbums, AlbumsDTO::class.java)
     }
 
-    @Transactional
     override fun deleteAlbum(id: Long): String {
         val existinAlbums = albumRepository.findById(id)
             .orElseThrow { AlbumNotFoundException("Album com id $id não encontrado") }

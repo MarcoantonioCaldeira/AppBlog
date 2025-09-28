@@ -1,4 +1,4 @@
-package com.blog.com.blog.model.dto
+package com.blog.model.dto
 
 data class PostDTO(
     val id: Long? = null,

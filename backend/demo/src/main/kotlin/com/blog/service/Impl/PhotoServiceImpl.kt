@@ -1,9 +1,10 @@
-package com.blog.com.blog.service.Impl
-import com.blog.com.blog.model.dto.PhotoDTO
-import com.blog.com.blog.model.entity.Photo
-import com.blog.com.blog.repository.AlbumRepository
-import com.blog.com.blog.repository.PhotoRepository
-import com.blog.com.blog.service.PhotoService
+package com.blog.service.Impl
+import com.blog.model.dto.PhotoDTO
+import com.blog.repository.AlbumRepository
+import com.blog.repository.PhotoRepository
+import com.blog.service.PhotoService
+import com.blog.model.entity.Photo
+import com.blog.model.entity.User
 import com.blog.service.exceptions.PhotoNotFoundException
 import com.blog.service.mapper.EntityConverter
 import jakarta.transaction.Transactional
@@ -16,19 +17,25 @@ class PhotoServiceImpl(
     private val albumRepository: AlbumRepository) : PhotoService {
 
     @Transactional
-    override fun createPhoto(photoDTO: PhotoDTO): PhotoDTO {
+    override fun createPhoto(photoDTO: PhotoDTO): Photo {
 
-        val album = albumRepository.findById(photoDTO.albumId)
-            .orElseThrow { PhotoNotFoundException("Album não encontrado") }
+        val album = photoDTO.albumId?.let { id ->
+            albumRepository.findById(id)
+                .orElseThrow { IllegalArgumentException("Álbum $id não encontrado") }
+        }
+
+        val user = albumRepository.findById(photoDTO.userId ?: 0).map { it.user }
+            .orElseThrow { PhotoNotFoundException("Usuário não encontrado") }
 
         val photo = Photo(
             fileName = photoDTO.fileName,
             data = photoDTO.data,
-            album = album
+            album = album,
+            user = user
         )
 
         val savedPhoto = photoRepository.save(photo)
-        return converter.parseObject(savedPhoto, PhotoDTO::class.java)
+        return savedPhoto
     }
 
     override fun getPhotoById(id: Long): PhotoDTO? {
@@ -42,7 +49,8 @@ class PhotoServiceImpl(
             PhotoDTO(
                 fileName = photos.fileName?: "",
                 data = photos.data?: ByteArray(0),
-                albumId = photos.album?.id?: 0
+                albumId = photos.album?.id?: 0,
+                userId = photos.user?.id?: 0
             )
         }
     }
@@ -65,7 +73,6 @@ class PhotoServiceImpl(
         return converter.parseObject(updatedPhotos, PhotoDTO::class.java)
     }
 
-    @Transactional
     override fun deletePhoto(id: Long): String {
         val exitinPhoto = photoRepository.findById(id)
             .orElseThrow { IllegalArgumentException("Foto não encontrada") }

@@ -1,10 +1,12 @@
 package com.blog.model.dto
+import com.blog.model.entity.Photo
 import com.blog.model.entity.UserRole
 
 
 data class UserDTO(
     var name: String? = null,
     var login : String? = null,
+    var user_photo: Photo? = null,
     var role: UserRole? = null,
     var email: String? = null,
     var passwordField: String? = null,

@@ -1,8 +1,8 @@
-package com.blog.com.blog.service.Impl
-import com.blog.com.blog.model.dto.PostDTO
-import com.blog.com.blog.model.entity.Post
-import com.blog.com.blog.repository.PostRepository
-import com.blog.com.blog.service.PostService
+package com.blog.service.Impl
+import com.blog.model.dto.PostDTO
+import com.blog.model.entity.Post
+import com.blog.repository.PostRepository
+import com.blog.service.PostService
 import com.blog.repository.UserRepository
 import com.blog.service.exceptions.PostNotFoundException
 import com.blog.service.mapper.EntityConverter
@@ -69,7 +69,6 @@ class PostServiceImpl(
         return converter.parseObject(updatedPost, PostDTO::class.java)
     }
 
-    @Transactional
     override fun deletePost(id: Long): String {
         val existinPost = postRepository.findById(id)
             .orElseThrow { PostNotFoundException("Post com id $id não encontrado") }

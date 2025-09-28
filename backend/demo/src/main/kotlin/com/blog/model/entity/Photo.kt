@@ -1,5 +1,6 @@
-package com.blog.com.blog.model.entity
-
+package com.blog.model.entity
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -21,19 +22,26 @@ class Photo {
     var fileName: String? = null
 
     @Lob
+    @JsonIgnore
     var data: ByteArray? = null
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
-    var album: Albums ? = null
+    var album: Albums? = null
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    var user : User? = null
 
     constructor()
 
-    constructor(fileName: String?, data: ByteArray?, album: Albums?) {
+    constructor(fileName: String?, data: ByteArray?, album: Albums?, user: User?) {
         this.fileName = fileName
         this.data = data
         this.album = album
+        this.user = user
     }
 
     override fun equals(other: Any?): Boolean {
